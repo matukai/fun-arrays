@@ -5,7 +5,16 @@ var dataset = require('./dataset.json');
   greater than 100000
   assign the resulting new array to `hundredThousandairs`
 */
-var hundredThousandairs = null;
+
+var hundredThousandairs = dataset.bankBalances.filter(thousand);
+
+//console.log(dataset.bankBalances);
+
+function thousand(arr) {
+  if (arr.amount > 100000) {
+    return arr;
+  }
+}
 
 /*
   DO NOT MUTATE DATA.
@@ -24,7 +33,15 @@ var hundredThousandairs = null;
     }
   assign the resulting new array to `datasetWithRoundedDollar`
 */
-var datasetWithRoundedDollar = null;
+//console.log(dataset);
+
+var datasetWithRoundedDollar = dataset.bankBalances.map(amountRounded);
+
+function amountRounded(element) {
+  let obj = Object.assign({}, element);
+  obj.rounded = Math.round(obj.amount);
+  return obj;
+}
 
 /*
   DO NOT MUTATE DATA.
@@ -38,7 +55,7 @@ var datasetWithRoundedDollar = null;
   Example 1
     {
       "amount": "134758.46",
-      "state": "HI"
+      ")state": "HI"
       "roundedDime": 134758.5
     }
   Example 2
@@ -49,10 +66,22 @@ var datasetWithRoundedDollar = null;
     }
   assign the resulting new array to `roundedDime`
 */
-var datasetWithRoundedDime = null;
+var datasetWithRoundedDime = dataset.bankBalances.map(dimesRounded);
+
+function dimesRounded(element) {
+  let obj = Object.assign({}, element);
+  obj.roundedDime = (Math.round(obj.amount * 10) / 10);
+  return obj;
+}
 
 // set sumOfBankBalances to be the sum of all value held at `amount` for each bank object
-var sumOfBankBalances = null;
+
+var sumOfBankBalances = dataset.bankBalances.reduce(sumOfBankBalances, 0);
+
+function sumOfBankBalances(prev, curr, index, array) {
+  prev += parseFloat(curr.amount);
+  return (Math.round(prev * 100) / 100);
+}
 
 /*
   from each of the following states:
@@ -65,7 +94,16 @@ var sumOfBankBalances = null;
   take each `amount` and add 18.9% interest to it rounded to the nearest cent
   and then sum it all up into one value saved to `sumOfInterests`
  */
-var sumOfInterests = null;
+
+var sumOfInterests = dataset.bankBalances.filter(function (element) {
+  if (element.state === 'WI' || element.state === 'IL' || element.state === 'WY' || element.state === 'OH' || element.state === 'GA' || element.state === 'DE') {
+    return element.amount
+  }
+}).reduce(function(accum, total){
+  accum += parseFloat(total.amount) * 0.189;
+  return Math.round(accum * 100) / 100;
+},0)
+
 
 /*
   aggregate the sum of bankBalance amounts
@@ -86,20 +124,16 @@ var sumOfInterests = null;
 var stateSums = null;
 
 /*
-  from each of the following states:
-    Wisconsin
-    Illinois
-    Wyoming
-    Ohio
-    Georgia
-    Delaware
-  take each `amount` and add 18.9% interest to it
-  only sum values greater than 50,000 and save it to `sumOfInterests`
-
-  note: During your summation (
-    if at any point durig your calculation where the number looks like `2486552.9779399997`
-    round this number to the nearest 10th of a cent before moving on.
-  )
+for all states not in the following states:
+      Wisconsin              Wisconsin
+      Illinois              Illinois
+      Wyoming              Wyoming
+      Ohio              Ohio
+      Georgia              Georgia
+      Delaware              Delaware
+  sum the amount for each state (stateSum)
+  take each `stateSum` and add 18.9% interest to it
+  sum only `stateSum` who's interest only values is greater than 50,000 and save it to `sumOfHighInterests`
  */
 var sumOfHighInterests = null;
 
@@ -151,15 +185,15 @@ var anyStatesInHigherStateSum = null;
 
 
 module.exports = {
-  hundredThousandairs : hundredThousandairs,
-  datasetWithRoundedDollar : datasetWithRoundedDollar,
-  datasetWithRoundedDime : datasetWithRoundedDime,
-  sumOfBankBalances : sumOfBankBalances,
-  sumOfInterests : sumOfInterests,
-  sumOfHighInterests : sumOfHighInterests,
-  stateSums : stateSums,
-  lowerSumStates : lowerSumStates,
-  higherStateSums : higherStateSums,
-  areStatesInHigherStateSum : areStatesInHigherStateSum,
-  anyStatesInHigherStateSum : anyStatesInHigherStateSum
+  hundredThousandairs: hundredThousandairs,
+  datasetWithRoundedDollar: datasetWithRoundedDollar,
+  datasetWithRoundedDime: datasetWithRoundedDime,
+  sumOfBankBalances: sumOfBankBalances,
+  sumOfInterests: sumOfInterests,
+  sumOfHighInterests: sumOfHighInterests,
+  stateSums: stateSums,
+  lowerSumStates: lowerSumStates,
+  higherStateSums: higherStateSums,
+  areStatesInHigherStateSum: areStatesInHigherStateSum,
+  anyStatesInHigherStateSum: anyStatesInHigherStateSum
 };
